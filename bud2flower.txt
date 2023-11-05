@@ -1,0 +1,67 @@
+#include <GL/glut.h>
+#include <cmath>
+#include <ctime>
+#include <iostream>
+
+// Global variables to control the animation
+bool animationInProgress = true;
+int currentFrame = 0;
+int totalFrames = 100;  // Adjust the number of frames for the desired duration
+
+// Parameters for petal animation
+GLfloat petalRotation = 0.0;
+
+void drawPetal() {
+    // Draw a petal based on the current rotation angle
+    glPushMatrix();
+    glRotatef(petalRotation, 0, 0, 1);
+    
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.0, 0.0);  // Red color for the petal
+
+    // Define the vertices of the petal
+    glVertex2f(0, 0);
+    glVertex2f(0.1, 0.5);
+    glVertex2f(-0.1, 0.5);
+    glEnd();
+
+    glPopMatrix();
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw the opening bud (e.g., an ellipse or circle)
+
+    // Update the petal rotation based on the current frame
+    petalRotation = static_cast<float>(currentFrame) / totalFrames * 90.0;  // Rotate from 0 to 90 degrees
+    
+    // Draw the petals
+    drawPetal();
+    
+    glFlush();
+
+    if (currentFrame < totalFrames) {
+        currentFrame++;
+    } else {
+        animationInProgress = false;
+    }
+}
+
+void animate() {
+    if (animationInProgress) {
+        display();
+    }
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Flower Opening Animation in OpenGL");
+    
+    glutDisplayFunc(animate);
+    glutMainLoop();
+
+    return 0;
+}
