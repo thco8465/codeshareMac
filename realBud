@@ -1,0 +1,94 @@
+To add a bud that encapsulates the petals and gradually opens to reveal them, you can modify the previous example by introducing the bud and a similar animation for it. Here's an example of how you can achieve this effect:
+
+```c
+#include <GL/glut.h>
+#include <cmath>
+#include <ctime>
+#include <iostream>
+
+// Global variables to control the animation
+bool animationInProgress = true;
+int currentFrame = 0;
+int totalFrames = 100;  // Adjust the number of frames for the desired duration
+
+// Parameters for petal and bud animations
+GLfloat petalRotation = 0.0;
+GLfloat budScale = 1.0;
+
+void drawPetal() {
+    // Draw a petal based on the current rotation angle
+    glPushMatrix();
+    glRotatef(petalRotation, 0, 0, 1);
+    
+    glBegin(GL_TRIANGLES);
+    glColor3f(1.0, 0.0, 0.0);  // Red color for the petal
+
+    // Define the vertices of the petal
+    glVertex2f(0, 0);
+    glVertex2f(0.1, 0.5);
+    glVertex2f(-0.1, 0.5);
+    glEnd();
+
+    glPopMatrix();
+}
+
+void drawBud() {
+    // Draw the bud using a simple ellipse or circle
+    glPushMatrix();
+    glScalef(budScale, budScale, 1.0);
+
+    // Example: Draw a bud as an ellipse
+    glBegin(GL_POLYGON);
+    glColor3f(0.5, 0.3, 0.1);  // Brown color for the bud
+    for (int i = 0; i < 360; i++) {
+        float angle = i * 3.141592653589793 / 180.0;
+        glVertex2f(0.05 * cos(angle), 0.2 * sin(angle));
+    }
+    glEnd();
+    
+    glPopMatrix();
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw the bud
+    drawBud();
+
+    // Update the bud scale based on the current frame
+    budScale = 1.0 - static_cast<float>(currentFrame) / totalFrames;
+    
+    // Draw the petals
+    drawPetal();
+    
+    glFlush();
+
+    if (currentFrame < totalFrames) {
+        currentFrame++;
+    } else {
+        animationInProgress = false;
+    }
+}
+
+void animate() {
+    if (animationInProgress) {
+        display();
+    }
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Bud Opening Animation in OpenGL");
+    
+    glutDisplayFunc(animate);
+    glutMainLoop();
+
+    return 0;
+}
+```
+
+In this code, we've added a simple bud represented as an ellipse that scales down over time to gradually reveal the petals. The `budScale` parameter controls the scale of the bud, and it decreases from 1.0 to 0.0 over the specified number of frames.
+
+This example demonstrates a basic animation of a bud encapsulating petals and gradually opening to reveal them. You can further enhance this animation by adding more realistic bud and petal shapes, textures, and additional movements as needed.
