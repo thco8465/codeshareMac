@@ -1,0 +1,72 @@
+#include <GL/glut.h>
+#include <cmath>
+#include <ctime>
+
+// Global variables to control the animation
+bool animationInProgress = true;
+int currentFrame = 0;
+int totalFrames = 100;  // Adjust the number of frames for the desired duration
+
+// Parameters for stem and flower animations
+GLfloat stemRotation = 0.0;  // Initial stem rotation
+
+void drawFlower() {
+    // Draw the stem with gradually increasing curvature
+    glColor3f(0.0, 1.0, 0.0);  // Green color for the stem
+    
+    glPushMatrix();
+    glTranslatef(0.0, -0.5, 0.0);  // Translate the stem to the base position
+    
+    // Apply the stem's rotation, gradually increasing curvature
+    glRotatef(stemRotation, 1.0, 0.0, 0.0);
+    
+    // Draw the stem as a cylinder
+    GLUquadricObj *quadric = gluNewQuadric();
+    gluCylinder(quadric, 0.05, 0.05, 0.5, 20, 1);  // Adjust the dimensions as needed
+
+    glPopMatrix();
+
+    // Draw the flower using petals (as discussed in previous examples)
+    // ...
+}
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Draw the flower with a gradually curving stem
+    drawFlower();
+
+    glFlush();
+
+    if (currentFrame < totalFrames) {
+        currentFrame++;
+
+        // Increase the stem's curvature with each frame
+        stemRotation += 2.0;  // You can adjust the curvature rate as needed
+
+        // Ensure the curvature doesn't exceed a certain limit
+        if (stemRotation > 90.0) {
+            stemRotation = 90.0;
+        }
+    } else {
+        animationInProgress = false;
+    }
+}
+
+void animate() {
+    if (animationInProgress) {
+        display();
+    }
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Curving Stem with Flower in OpenGL");
+
+    glutDisplayFunc(animate);
+    glutMainLoop();
+
+    return 0;
+}
