@@ -25,24 +25,39 @@ void drawStem() {
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Randomize the petal color
-    glColor3f((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX);
-
-    // Draw the stem
-    drawStem();
-
-    // Draw six petals around the stem in a circular pattern
-    int numPetals = 6;
-    for (int i = 0; i < numPetals; ++i) {
+    // Create a field of random flowers
+    int numFlowers = 10;
+    for (int i = 0; i < numFlowers; ++i) {
         glPushMatrix();
 
-        // Apply random scaling to the petals
-        float randomScale = (rand() % 10 + 1) / 10.0;
-        glScalef(randomScale, randomScale, 1.0);
+        // Randomize the petal color
+        glColor3f((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX);
 
-        glRotatef(i * 360.0f / numPetals, 0, 0, 1);
-        glTranslatef(0, 0.6, 0);  // Position the petals above the stem
-        drawPetal();
+        // Randomize the number of petals (between 5 and 8)
+        int numPetals = (rand() % 4) + 5;
+        for (int j = 0; j < numPetals; ++j) {
+            glPushMatrix();
+
+            // Apply random scaling to the petals
+            float randomScale = (rand() % 6 + 5) / 10.0;
+            glScalef(randomScale, randomScale, 1.0);
+
+            // Rotate petals around the stem
+            glRotatef(j * 360.0f / numPetals, 0, 0, 1);
+
+            // Randomly position each flower in the field
+            float xPos = (float)(rand() % 200 - 100) / 100.0;
+            float yPos = (float)(rand() % 200 - 100) / 100.0;
+            glTranslatef(xPos, yPos, 0);
+
+            // Draw petals
+            drawPetal();
+            glPopMatrix();
+        }
+
+        // Draw the stem for each flower
+        drawStem();
+
         glPopMatrix();
     }
 
@@ -53,7 +68,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(800, 800);
-    glutCreateWindow("Randomized Flowers in OpenGL");
+    glutCreateWindow("Variations of Flowers in OpenGL");
     glutDisplayFunc(display);
 
     // Seed the random number generator with the current time
