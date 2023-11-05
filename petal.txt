@@ -9,14 +9,28 @@ void drawPetal() {
     glEnd();
 }
 
+void drawStem() {
+    glBegin(GL_QUADS);
+    // Define the vertices of a stem (rectangle)
+    glVertex2f(-0.05, -1.0);
+    glVertex2f(0.05, -1.0);
+    glVertex2f(0.05, 0.0);
+    glVertex2f(-0.05, 0.0);
+    glEnd();
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    // Draw the stem
+    drawStem();
     
     // Draw multiple petals in a circular pattern
     int numPetals = 6;
     for (int i = 0; i < numPetals; ++i) {
         glPushMatrix();
         glRotatef(i * 360.0f / numPetals, 0, 0, 1);
+        glTranslatef(0, 0.6, 0);  // Position the petals above the stem
         drawPetal();
         glPopMatrix();
     }
@@ -28,7 +42,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(800, 800);
-    glutCreateWindow("Flower with OpenGL");
+    glutCreateWindow("Flower with Stem in OpenGL");
     glutDisplayFunc(display);
     glutMainLoop();
     return 0;
