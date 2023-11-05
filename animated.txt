@@ -1,0 +1,87 @@
+#include <GL/glut.h>
+#include <cmath>
+#include <ctime>
+
+// Global variables to control the animation
+bool animationInProgress = true;
+int frameCount = 0;
+int totalFrames = 100;  // Adjust the number of frames for the desired duration
+
+void drawPetal(float scale) {
+    glPushMatrix();
+
+    glScalef(scale, scale, 1.0);
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 0.0, 0.0);  // Red color for the petal
+
+    // Define the control points for the Bezier curve
+    float p0[2] = {0.0, 0.0};
+    float p1[2] = {0.1, 0.2};
+    float p2[2] = {-0.1, 0.2};
+    float p3[2] = {0.0, 0.6};
+
+    // Draw the petal as before
+    // ...
+
+    glEnd();
+    
+    glPopMatrix();
+}
+
+void drawStem(float scale) {
+    glPushMatrix();
+    
+    glScalef(0.1, scale, 1.0);  // Scale the stem only in the y-axis
+
+    glBegin(GL_QUADS);
+    glColor3f(0.0, 1.0, 0.0);  // Green color for the stem
+    glVertex2f(-0.05, -1.0);
+    glVertex2f(0.05, -1.0);
+    glVertex2f(0.05, 0.0);
+    glVertex2f(-0.05, 0.0);
+    glEnd();
+    
+    glPopMatrix();
+}
+
+void animate() {
+    if (frameCount <= totalFrames) {
+        // Calculate the scale factor based on the frame count
+        float scale = static_cast<float>(frameCount) / totalFrames;
+        
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        // Draw the stem and petals with the current scale
+        drawStem(scale);
+        drawPetal(scale);
+        
+        glFlush();
+        
+        frameCount++;
+    } else {
+        // Animation has finished
+        animationInProgress = false;
+    }
+}
+
+void display() {
+    if (animationInProgress) {
+        animate();
+    }
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(800, 800);
+    glutCreateWindow("Growing Flower in OpenGL");
+    
+    // Seed the random number generator with the current time
+    srand(time(NULL));
+    
+    glutDisplayFunc(display);
+    glutMainLoop();
+    
+    return 0;
+}
